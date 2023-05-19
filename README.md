@@ -58,7 +58,3 @@ If you are searching for the meaning of life, I encourage you to explore your ow
 
 ![interactive](static/interactive.png)
 
-
-## TODO
-
-Currently, the CLI does not support conversations and each question is treated as a new thread. 
