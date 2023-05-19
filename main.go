@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/glamour"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
@@ -48,6 +49,7 @@ func main() {
 	flags := cmd.Flags()
 	config := flags.StringP("config", "c", "$HOME/.bardcli.yaml", "path to YAML configuration file")
 	_ = flags.Bool("defaultconfig", false, "write the default config yaml file to stdout")
+	_ = flags.BoolP("interactive", "i", false, "run in interactive/conversation mode. Bard will remember your previous questions and answers")
 	_ = flags.BoolP("version", "v", false, "show version info and exit")
 
 	if err := cmd.Execute(); err != nil {
@@ -106,10 +108,23 @@ func main() {
 
 	// set up the bard client
 	bard := bard.New(k.String("cookie"), &logger)
+
+	// run in interactive mode
+	if flags.Changed("interactive") {
+		RunInteractive(bard)
+		return
+	}
+
+	// run in single question mode
 	answer, err := bard.Ask(strings.Join(flags.Args(), " "))
 	if err != nil {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}
-	fmt.Println(answer)
+
+	out, err := glamour.RenderWithEnvironmentConfig(answer)
+	if err != nil {
+		logger.Fatal().Msgf("failed to render answer: %s", err)
+	}
+	fmt.Println(out)
 
 }

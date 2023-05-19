@@ -52,6 +52,13 @@ Here are some additional thoughts on the meaning of life:
 If you are searching for the meaning of life, I encourage you to explore your own values, beliefs, and experiences. What is important to you? What makes you happy? What do you want to achieve in your life? The answers to these questions may help you to find your own meaning in life.
 ```
 
+## Screenshots
+
+![single question](static/singlequestion.png)
+
+![interactive](static/interactive.png)
+
+
 ## TODO
 
 Currently, the CLI does not support conversations and each question is treated as a new thread. 

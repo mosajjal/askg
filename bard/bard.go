@@ -42,21 +42,23 @@ type Bard struct {
 	answer bardAnswer
 }
 
-func New(c string, l *zerolog.Logger) *Bard {
+// New creates a new Bard AI instance. Cookie is the __Secure-1PSID cookie from Google
+func New(cookie string, l *zerolog.Logger) *Bard {
 	b := &Bard{
-		Cookie: c,
+		Cookie: cookie,
 		logger: l,
 	}
 	b.answer = bardAnswer{}
 	return b
 }
 
-// GetResponse generates a Bard AI response and returns it to the user
+// Ask generates a Bard AI response and returns it to the user
 func (b *Bard) Ask(prompt string) (string, error) {
 	// Create a Resty Client
 	client := resty.New()
-	// TODO: fix
-	// client.SetLogger(b.logger)
+
+	client.SetLogger(Log{b.logger})
+	client.SetDebug(true)
 
 	client.SetHeaders(headers)
 	client.SetCookie(&http.Cookie{
@@ -83,12 +85,6 @@ func (b *Bard) Ask(prompt string) (string, error) {
 		"rt":     "c",
 	}
 
-	// form data
-	// '[null, "[[\\"salam\\"], null, [\\"4\\", \\"3\\", \\"2\\"]]"]'
-	// `[null, "[[\\"%s\\"], null, [\\"%s\\", \\"%s\\", \\"%s\\"]]]`
-	// `[null, "[[\\"%s\\"], null, [\\"%s\\", \\"%s\\", \\"%s\\"]]]`
-	req := fmt.Sprintf(`[null, "[[\"%s\"], null, [\"%s\", \"%s\", \"%s\"]]"]`,
-		prompt, b.answer.ConversationID, b.answer.ResponseID, b.answer.ChoiceID)
 	// in response text, the value shows. in python:
 	r := regexp.MustCompile(`SNlM0e\":\"(.*?)\"`)
 
@@ -97,6 +93,10 @@ func (b *Bard) Ask(prompt string) (string, error) {
 		return "", fmt.Errorf("failed to find snim0e value. possibly misconfigured cookies?")
 	}
 	snim0e := r.FindStringSubmatch(resp.String())[1]
+
+	req := fmt.Sprintf(`[null, "[[\"%s\"], null, [\"%s\", \"%s\", \"%s\"]]"]`,
+		//prompt, b.answer.ConversationID, b.answer.ResponseID, b.answer.ChoiceID)
+		prompt, b.answer.ConversationID, b.answer.ResponseID, b.answer.ChoiceID)
 
 	reqData := map[string]string{
 		"f.req": string(req),
@@ -121,6 +121,7 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	// this is the Go version
 	buf := new(bytes.Buffer)
 	_, _ = buf.ReadFrom(resp.RawResponse.Body)
+
 	respLines := strings.Split(buf.String(), "\n")
 	respJSON := respLines[3]
 
@@ -139,6 +140,12 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	b.answer.Content = fullRes[0][0].(string)
 	b.answer.ConversationID = fullRes[1][0].(string)
 	b.answer.ResponseID = fullRes[1][1].(string)
+
+	for _, v := range fullRes[4] {
+		choices := v.([]interface{})
+		b.answer.ChoiceID = choices[0].(string)
+		break
+	}
 
 	return b.answer.Content, nil
 }
