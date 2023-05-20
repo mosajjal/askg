@@ -52,6 +52,13 @@ func New(cookie string, l *zerolog.Logger) *Bard {
 	return b
 }
 
+// Clear clears the bard answer IDs
+func (b *Bard) Clear() {
+	b.answer.ChoiceID = ""
+	b.answer.ConversationID = ""
+	b.answer.ResponseID = ""
+}
+
 // Ask generates a Bard AI response and returns it to the user
 func (b *Bard) Ask(prompt string) (string, error) {
 	// Create a Resty Client
