@@ -21,7 +21,7 @@ func RunInteractive(bard *bard.Bard) {
 			Label: "Q",
 		}
 		text, err := q.Run()
-		if err != nil || text == "!quit" {
+		if err != nil || text == "!quit" || text == "" {
 			return
 		}
 		if text == "!reset" {

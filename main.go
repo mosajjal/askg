@@ -116,7 +116,11 @@ func main() {
 	}
 
 	// run in single question mode
-	answer, err := bard.Ask(strings.Join(flags.Args(), " "))
+	question := strings.Join(flags.Args(), " ")
+	if question == "" {
+		logger.Fatal().Msg("no question provided")
+	}
+	answer, err := bard.Ask(question)
 	if err != nil {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}
