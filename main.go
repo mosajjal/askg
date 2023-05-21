@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -62,7 +62,7 @@ func main() {
 		if err != nil {
 			logger.Fatal().Msgf("failed to get user home directory: %s", err)
 		}
-		*config = path.Join(home, ".bardcli.yaml")
+		*config = filepath.Join(home, ".bardcli.yaml")
 	}
 	if flags.Changed("help") {
 		return

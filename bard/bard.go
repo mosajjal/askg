@@ -132,18 +132,35 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	}
 
 	// get the main answer
-	err = json.Unmarshal([]byte(fullRes[0][2].(string)), &fullRes)
+	res, ok := fullRes[0][2].(string)
+	if !ok {
+		return "", fmt.Errorf("failed to get answer from bard")
+	}
+
+	err = json.Unmarshal([]byte(res), &fullRes)
 	if err != nil {
 		return "", err
 	}
 
-	b.answer.Content = fullRes[0][0].(string)
-	b.answer.ConversationID = fullRes[1][0].(string)
-	b.answer.ResponseID = fullRes[1][1].(string)
+	b.answer.Content, ok = fullRes[0][0].(string)
+	if !ok {
+		return "", fmt.Errorf("failed to get answer from bard")
+	}
+	b.answer.ConversationID, ok = fullRes[1][0].(string)
+	if !ok {
+		return "", fmt.Errorf("failed to get answer from bard")
+	}
+	b.answer.ResponseID, ok = fullRes[1][1].(string)
+	if !ok {
+		return "", fmt.Errorf("failed to get answer from bard")
+	}
 
 	for _, v := range fullRes[4] {
 		choices := v.([]interface{})
-		b.answer.ChoiceID = choices[0].(string)
+		b.answer.ChoiceID, ok = choices[0].(string)
+		if !ok {
+			return "", fmt.Errorf("failed to get answer from bard")
+		}
 		break
 	}
 
