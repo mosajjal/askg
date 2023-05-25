@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/glamour"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
@@ -116,15 +115,15 @@ func main() {
 	}
 
 	// run in single question mode
-	answer, err := bard.Ask(strings.Join(flags.Args(), " "))
+	question := strings.Join(flags.Args(), " ")
+	if question == "" {
+		logger.Fatal().Msg("no question provided")
+	}
+	answer, err := bard.Ask(santizeQuestion(question))
 	if err != nil {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}
 
-	out, err := glamour.RenderWithEnvironmentConfig(answer)
-	if err != nil {
-		logger.Fatal().Msgf("failed to render answer: %s", err)
-	}
-	fmt.Println(out)
+	fmt.Println(renderToMD(answer))
 
 }
