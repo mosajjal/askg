@@ -10,7 +10,7 @@ go install github.com/mosajjal/bard-cli@latest
 
 or download the binary from [releases](//github.com/mosajjal/bard-cli/releases/latest)
 
-in order to use this, you first need to gain access to Bard in your browser, and then copy the cookie "__Secure-1PSID" using developer tools. If you don't know how, follow [this guide](https://developer.chrome.com/docs/devtools/application/cookies/)
+In order to use Bard CLI, you first need to gain access to Bard in your browser, and then copy the cookie "__Secure-1PSID" using developer tools. If you don't know how, follow [this guide](https://developer.chrome.com/docs/devtools/application/cookies/)
 
 IMPORTANT NOTE: never share your cookies with anyone, as they can be used to impersonate you and steal your data.
 
@@ -29,8 +29,8 @@ log_level: debug
 ```
 
 then just start using it!
-    
-```bash
+
+```md
 $ bard-cli "what is the meaning of life?"
 The meaning of life is a question that has been asked by philosophers and theologians for centuries. There is no one answer that will satisfy everyone, but some possible answers include:
 
