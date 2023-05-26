@@ -124,6 +124,6 @@ func main() {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}
 
-	fmt.Println(renderToMD(answer))
+	renderToMD(os.Stdout, answer)
 
 }

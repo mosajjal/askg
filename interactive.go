@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -17,13 +19,23 @@ func completer(d prompt.Document) []prompt.Suggest {
 		{Text: "!quit", Description: "Quit the application"},
 		{Text: "!editor", Description: "use $EDITOR to write the question"},
 		{Text: "!reset", Description: "Reset the bard conversation"},
+		{Text: "!write <file>", Description: "Write the conversation to a file"},
 	}
 	return prompt.FilterHasPrefix(s, d.Text, true)
 }
 
-func renderToMD(text string) string {
-	out, _ := glamour.RenderWithEnvironmentConfig(text)
-	return out
+func renderToMD(f *os.File, text string) {
+	out := ""
+	if f == os.Stdout {
+		o, _ := os.Stdout.Stat()
+		if (o.Mode() & os.ModeCharDevice) == os.ModeCharDevice { //Terminal
+
+			out, _ = glamour.RenderWithEnvironmentConfig(text)
+		}
+	} else {
+		out = text
+	}
+	fmt.Fprintln(f, out)
 }
 
 func santizeQuestion(question string) string {
@@ -48,13 +60,13 @@ func normalQ(bard *bard.Bard, question string) string {
 func RunInteractive(bard *bard.Bard) {
 	fmt.Println("Press Ctrl+D to exit")
 	fmt.Println("press <tab> to see the list of commands")
+	outFile := os.Stdout
 	for {
 		text := prompt.Input("> ", completer)
-
-		switch text {
-		case "!quit":
+		switch {
+		case strings.HasPrefix(text, "!quit"):
 			return
-		case "!editor":
+		case strings.HasPrefix(text, "!editor"):
 			editorQ := ""
 			prompt := &survey.Editor{
 				Message:  "Question:",
@@ -66,15 +78,36 @@ func RunInteractive(bard *bard.Bard) {
 			}
 			// trim the last newline
 			editorQ = editorQ[:len(editorQ)-1]
-			fmt.Println(renderToMD(normalQ(bard, editorQ)))
+			fmt.Fprintln(outFile, "Q: "+text)
+			renderToMD(outFile, normalQ(bard, editorQ))
 			continue
-		case "!reset":
+		case strings.HasPrefix(text, "!reset"):
 			bard.Clear()
 			continue
-		case "":
+		case strings.TrimSpace(text) == "":
 			continue
+		case strings.HasPrefix(text, "!write"):
+			// get the file name by spiliting the text after !write
+			fname := strings.Split(text, "!write")
+			if len(fname) < 2 {
+				fmt.Println("Please provide a file name")
+				continue
+			}
+			outFileName := strings.TrimSpace(fname[1])
+			if outFileName == "" {
+				fmt.Println("Please provide a file name")
+				continue
+			}
+			var err error
+			outFile, err = os.OpenFile(outFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
 		default:
-			fmt.Println(renderToMD(normalQ(bard, text)))
+			// Write the question back as well
+			fmt.Fprintln(outFile, "Q: "+text)
+			renderToMD(outFile, normalQ(bard, text))
 			continue
 		}
 
