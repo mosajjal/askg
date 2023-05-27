@@ -58,7 +58,6 @@ func normalQ(bard *bard.Bard, question string) string {
 
 // RunInteractive runs the interactive mode of the CLI
 func RunInteractive(bard *bard.Bard) {
-	fmt.Println("Press Ctrl+D to exit")
 	fmt.Println("press <tab> to see the list of commands")
 	outFile := os.Stdout
 	for {
