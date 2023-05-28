@@ -28,9 +28,10 @@ func renderToMD(f *os.File, text string) {
 	out := ""
 	if f == os.Stdout {
 		o, _ := os.Stdout.Stat()
-		if (o.Mode() & os.ModeCharDevice) == os.ModeCharDevice { //Terminal
-
+		if (o.Mode()&os.ModeCharDevice) == os.ModeCharDevice && nocolor == false { //Terminal
 			out, _ = glamour.RenderWithEnvironmentConfig(text)
+		} else {
+			out = text
 		}
 	} else {
 		out = text

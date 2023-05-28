@@ -23,8 +23,8 @@ import (
 //go:embed config.defaults.yaml
 var defaultConfig []byte
 
-var nocolorLog = strings.ToLower(os.Getenv("NO_COLOR")) == "true"
-var logger = zerolog.New(os.Stderr).With().Timestamp().Logger().Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339, NoColor: nocolorLog})
+var nocolor = strings.ToLower(os.Getenv("NO_COLOR")) == "true"
+var logger = zerolog.New(os.Stderr).With().Timestamp().Logger().Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339, NoColor: nocolor})
 
 var (
 	version string = "UNKNOWN"
