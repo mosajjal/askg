@@ -2,17 +2,10 @@
 local M = {}
 
 M.askbard = function(question, bardcli_path, bardcli_config)
-    -- Set the environment variables
-    os.execute('export NO_COLOR=true')
-    local cmd = bardcli_path .. " -c " .. bardcli_config .. " " .. question
-    local status = io.popen(cmd)
-    local result = status:read("*a")
-    local rc = {status:close()}
-
-    -- throw an error if status code is not 0
-    if rc[1]== false then
-        raise ("Error: " .. result)
-    end
+    local cmd = "sh -c 'NO_COLOR=true " .. bardcli_path .. " -c " .. bardcli_config .. " " .. question .. " 2>&1'"
+    local handler = io.popen(cmd)
+    local result = handler:read("*all")
+    local succeeded, error_msg, retcode  = handler:close()
 
     -- Create a new vertical split
     vim.cmd('vsplit')
