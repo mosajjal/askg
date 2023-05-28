@@ -7,11 +7,11 @@ M.askbard = function(question, bardcli_path, bardcli_config)
     local cmd = bardcli_path .. " -c " .. bardcli_config .. " " .. question
     local status = io.popen(cmd)
     local result = status:read("*a")
-    status:close()
+    local rc = {status:close()}
 
     -- throw an error if status code is not 0
-    if $?.exitstatus ~= 0 then
-        raise "Error: " + result
+    if rc[1]== false then
+        raise ("Error: " .. result)
     end
 
     -- Create a new vertical split
