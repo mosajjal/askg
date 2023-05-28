@@ -9,6 +9,11 @@ M.askbard = function(question, bardcli_path, bardcli_config)
     local result = status:read("*a")
     status:close()
 
+    -- throw an error if status code is not 0
+    if $?.exitstatus ~= 0 then
+        raise "Error: " + result
+    end
+
     -- Create a new vertical split
     vim.cmd('vsplit')
     -- Switch to the new split

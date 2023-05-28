@@ -4,7 +4,7 @@ local module = require("bard.module")
 local M = {}
 M.config = {
   -- default config
-  bardcli_path = "/home/ali/go/bin/bard-cli",
+  bardcli_path = "$HOME/go/bin/bard-cli",
   bardcli_config_path = "$HOME/.bardcli.yaml",
 }
 

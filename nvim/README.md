@@ -1,45 +1,26 @@
-# A Neovim Plugin Template
+# Bard CLI Neovim plugin
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ellisonleao/nvim-plugin-template/default.yml?branch=main&style=for-the-badge)
-![Lua](https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua)
+## Installation
 
-A template repository for Neovim plugins.
+in your neovim config, add the following plugin
 
-## Using it
-
-Via `gh`:
-
-```
-$ gh repo create my-plugin -p ellisonleao/nvim-plugin-template
+```lua
+Plug 'mosajjal/bard-cli', {'rtp': 'nvim'}
 ```
 
-Via github web page:
+by default, the plugin looks for `bard-cli` in `$HOME/go/bin/bard-cli` and the configuration file at `$HOME/.bardcli.yaml`
 
-Click on `Use this template`
+to change that, run the setup function of bard using the following
 
-![](https://docs.github.com/assets/cb-36544/images/help/repository/use-this-template-button.png)
-
-## Features and structure
-
-- 100% Lua
-- Github actions to run tests and check for formatting errors (Stylua)
-- Tests created with [busted](https://olivinelabs.com/busted/) + [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
-- luarocks release support (LUAROCKS_API_KEY secret configuration required)
-
-### Plugin structure
-
+```lua
+lua require('bard').setup({bardcli_path="$HOME/go/bin/bard-cli", bardcli_config_path="$HOME/.bardcli.yaml"})
 ```
-.
-├── lua
-│   ├── plugin_name
-│   │   └── module.lua
-│   └── plugin_name.lua
-├── Makefile
-├── plugin
-│   └── plugin_name.lua
-├── README.md
-├── tests
-│   ├── minimal_init.lua
-│   └── plugin_name
-│       └── plugin_name_spec.lua
-```
+
+## Usage
+
+`
+:Askbard "write hello world in javascript"
+`
+
+the above will open a new vsplit and return the results in the new buffer
+
