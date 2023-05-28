@@ -82,3 +82,5 @@ lua require('bard').setup({bardcli_path="$HOME/go/bin/bard-cli", bardcli_config_
 `
 
 the above will open a new vsplit and return the results in the new buffer
+
+![interactive](static/neovim.png)
