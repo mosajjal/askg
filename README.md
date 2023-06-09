@@ -2,6 +2,8 @@
 
 Use Google Bard in your CLI!
 
+## UPDATE 2023-06-09: Google has changed the way Bard API works. This tool does NOT work anymore.
+
 ## Installation
 
 ```bash
