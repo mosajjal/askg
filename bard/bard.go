@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog"
+	"github.com/tidwall/gjson"
 	"k8s.io/apimachinery/pkg/util/rand"
 )
 
@@ -144,32 +145,11 @@ func (b *Bard) Ask(prompt string) (string, error) {
 		return "", fmt.Errorf("failed to get answer from bard")
 	}
 
-	err = json.Unmarshal([]byte(res), &fullRes)
-	if err != nil {
-		return "", err
-	}
-
-	b.answer.Content, ok = fullRes[0][0].(string)
-	if !ok {
-		return "", fmt.Errorf("failed to get answer from bard")
-	}
-	b.answer.ConversationID, ok = fullRes[1][0].(string)
-	if !ok {
-		return "", fmt.Errorf("failed to get answer from bard")
-	}
-	b.answer.ResponseID, ok = fullRes[1][1].(string)
-	if !ok {
-		return "", fmt.Errorf("failed to get answer from bard")
-	}
-
-	for _, v := range fullRes[4] {
-		choices := v.([]interface{})
-		b.answer.ChoiceID, ok = choices[0].(string)
-		if !ok {
-			return "", fmt.Errorf("failed to get answer from bard")
-		}
-		break
-	}
+	b.answer.Content = gjson.Get(res, "0.0").String()
+	b.answer.ConversationID = gjson.Get(res, "1.0").String()
+	b.answer.ResponseID = gjson.Get(res, "1.1").String()
+	choices := gjson.Get(res, "4").Array()
+	b.answer.ChoiceID = choices[0].Array()[0].String()
 
 	return b.answer.Content, nil
 }
