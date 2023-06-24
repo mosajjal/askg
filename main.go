@@ -24,7 +24,11 @@ import (
 var defaultConfig []byte
 
 var nocolor = strings.ToLower(os.Getenv("NO_COLOR")) == "true"
-var logger = zerolog.New(os.Stderr).With().Timestamp().Logger().Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339, NoColor: nocolor})
+var logger = zerolog.New(os.Stderr).
+	With().
+	Timestamp().
+	Logger().
+	Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339, NoColor: nocolor})
 
 var (
 	version string = "UNKNOWN"
@@ -37,10 +41,10 @@ func main() {
 		Use:   "bard",
 		Short: "bard is awesome",
 		Long: `bard is Google's AI model. This is a reverse engineered version of Bard on the web.
-		in order to use this, you first need to gain access to Bard in your browser, and then copy the cookie "__Secure-1PSID"
-		using developer tools. If you don't know how, follow this guide:
+		in order to use this, you first need to gain access to Bard in your browser,
+		and then copy the cookie "__Secure-1PSID" using developer tools. If you don't know how, follow this guide:
 		https://developer.chrome.com/docs/devtools/application/cookies/
-		IMPORTANT NOTE: never share your cookies with anyone, as they can be used to impersonate you and steal your data.
+		SECURITY NOTE: NEVER share your cookies with anyone. they can be used to impersonate you and steal your data.
 		`,
 		Run: func(cmd *cobra.Command, args []string) {
 		},
