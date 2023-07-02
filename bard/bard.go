@@ -145,11 +145,11 @@ func (b *Bard) Ask(prompt string) (string, error) {
 		return "", fmt.Errorf("failed to get answer from bard")
 	}
 
-	b.answer.Content = gjson.Get(res, "0.0").String()
 	b.answer.ConversationID = gjson.Get(res, "1.0").String()
 	b.answer.ResponseID = gjson.Get(res, "1.1").String()
 	choices := gjson.Get(res, "4").Array()
 	b.answer.ChoiceID = choices[0].Array()[0].String()
+	b.answer.Content = choices[0].Array()[1].Array()[0].String()
 
 	return b.answer.Content, nil
 }
