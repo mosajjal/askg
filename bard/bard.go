@@ -102,9 +102,30 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	}
 	snim0e := r.FindStringSubmatch(resp.String())[1]
 
-	req := fmt.Sprintf(`[null, "[[\"%s\"], null, [\"%s\", \"%s\", \"%s\"]]"]`,
-		//prompt, b.answer.ConversationID, b.answer.ResponseID, b.answer.ChoiceID)
-		prompt, b.answer.ConversationID, b.answer.ResponseID, b.answer.ChoiceID)
+	var sessionStruct = []interface{}{
+		[]string{prompt},
+		nil,
+		[]string{
+			b.answer.ConversationID,
+			b.answer.ResponseID,
+			b.answer.ChoiceID,
+		},
+	}
+
+	ls_byte, err := json.Marshal(sessionStruct)
+	if err != nil {
+		return "", err
+	}
+
+	var reqStruct = []interface{}{
+		nil,
+		string(ls_byte),
+	}
+
+	req, err := json.Marshal(reqStruct)
+	if err != nil {
+		return "", err
+	}
 
 	reqData := map[string]string{
 		"f.req": string(req),
