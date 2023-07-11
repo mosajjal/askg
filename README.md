@@ -25,7 +25,7 @@ and then edit the file to add your cookie.
 ```bash
 $ cat ~/.bardcli.yaml
 cookie: YOURLONG-COOKIE.
-log_level: debug
+log_level: warn
 ```
 
 then just start using it!
