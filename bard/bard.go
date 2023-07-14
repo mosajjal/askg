@@ -41,13 +41,19 @@ type Bard struct {
 	Cookie string
 	logger *zerolog.Logger
 	answer bardAnswer
+
+	// Timeout in seconds
+	TimeoutSnim0e int
+	TimeoutQuery  int
 }
 
 // New creates a new Bard AI instance. Cookie is the __Secure-1PSID cookie from Google
 func New(cookie string, l *zerolog.Logger) *Bard {
 	b := &Bard{
-		Cookie: cookie,
-		logger: l,
+		Cookie:        cookie,
+		logger:        l,
+		TimeoutSnim0e: 5,
+		TimeoutQuery:  60,
 	}
 	b.answer = bardAnswer{}
 	return b
@@ -76,7 +82,9 @@ func (b *Bard) Ask(prompt string) (string, error) {
 
 	// get snim0e value from bard
 	client.SetBaseURL("https://bard.google.com")
-	client.SetTimeout(5 * time.Second)
+	if b.TimeoutSnim0e > 0 {
+		client.SetTimeout(time.Duration(b.TimeoutSnim0e) * time.Second)
+	}
 
 	resp, err := client.R().Get("/")
 	if err != nil {
@@ -133,7 +141,9 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	}
 
 	client.SetBaseURL(bardURL)
-	client.SetTimeout(60 * time.Second)
+	if b.TimeoutQuery > 0 {
+		client.SetTimeout(time.Duration(b.TimeoutQuery) * time.Second)
+	}
 	client.SetFormData(reqData)
 	client.SetQueryParams(reqParams)
 	client.SetDoNotParseResponse(true)
