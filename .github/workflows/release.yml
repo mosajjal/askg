@@ -17,6 +17,8 @@ jobs:
             goos: darwin
           - goarch: "arm"
             goos: darwin
+          - goarch: "386"
+            goos: windows
     steps:
     - uses: actions/checkout@v3
     - uses: wangyoucao577/go-release-action@master
