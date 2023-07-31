@@ -1,2 +1,7 @@
+# the cookie value is obtained from the browser session
+# obtain cookie "__Secure-1PSID" using developer tools. If you don't know how, follow this guide:
+# https://developer.chrome.com/docs/devtools/application/cookies/
+# the format of the value will look like this:
+# cookie: "LONGSTRING-?-LONGSTRING.
 cookie: ""
 log_level: warn
