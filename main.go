@@ -123,7 +123,7 @@ func main() {
 	if question == "" {
 		logger.Fatal().Msg("no question provided")
 	}
-	answer, err := bard.Ask(santizeQuestion(question))
+	answer, err := bard.Ask(sanitizeQuestion(question))
 	if err != nil {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}

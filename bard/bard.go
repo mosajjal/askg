@@ -19,7 +19,7 @@ var headers map[string]string = map[string]string{
 	"Host":          "bard.google.com",
 	"X-Same-Domain": "1",
 	"User-Agent":    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-	"Content-Type":  "application/x-www-form-urlencoded;charset=UTF-8",
+	"Content-Type":  "application/x-www-form-urlencoded;charset=utf-8",
 	"Origin":        "https://bard.google.com",
 	"Referer":       "https://bard.google.com/",
 }

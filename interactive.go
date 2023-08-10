@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -39,16 +38,17 @@ func renderToMD(f *os.File, text string) {
 	fmt.Fprintln(f, out)
 }
 
-func santizeQuestion(question string) string {
-	// url encode the question
-	return url.QueryEscape(question)
+func sanitizeQuestion(question string) string {
+	// url encode the question. BUG: this breaks UTF-8. for now returning the question
+	return question
+	// return url.QueryEscape(question)
 }
 
 func normalQ(bard *bard.Bard, question string) string {
 	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
 	s.UpdateCharSet(spinner.CharSets[11])
 	s.Start()
-	answer, err := bard.Ask(santizeQuestion(question))
+	answer, err := bard.Ask(sanitizeQuestion(question))
 	if err != nil {
 		fmt.Println(err)
 		answer = ""
