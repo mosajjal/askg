@@ -52,6 +52,10 @@ Here are some additional thoughts on the meaning of life:
 If you are searching for the meaning of life, I encourage you to explore your own values, beliefs, and experiences. What is important to you? What makes you happy? What do you want to achieve in your life? The answers to these questions may help you to find your own meaning in life.
 ```
 
+## Use a Proxy
+
+To use a HTTP(s) or SOCKS4/5 proxy to access bard, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `bard-cli`. 
+
 ## Screenshots
 
 ![single question](static/singlequestion.png)
