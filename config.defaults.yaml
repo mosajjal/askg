@@ -4,7 +4,7 @@
 # https://developer.chrome.com/docs/devtools/application/cookies/
 # the format of the value will look like this:
 # cookie1psid: "LONGSTRING-?-LONGSTRING.
-cookie1psid: ""
+cookie1psid: "" # cookie1psid is an alias to the previous "cookie" value. don't use both
 cookie1psidts: ""
 cookie1psidcc: ""
 log_level: warn
