@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -75,7 +74,7 @@ func main() {
 		return
 	}
 	if flags.Changed("defaultconfig") {
-		err := ioutil.WriteFile(*config, defaultConfig, 0644)
+		err := os.WriteFile(*config, defaultConfig, 0644)
 		if err != nil {
 			logger.Fatal().Msgf("failed to write default config: %s", err)
 		}
@@ -110,7 +109,15 @@ func main() {
 	}
 
 	// set up the bard client
-	bard := bard.New(k.String("cookie"), &logger)
+	cookie1psid := k.String("cookie")
+	// cookie1psid is an alias for cookie
+	if cookie1psid == "" {
+		cookie1psid = k.String("cookie1psid")
+	}
+	cookie1psidts := k.String("cookie1psidts")
+	cookie1psidcc := k.String("cookie1psidcc")
+
+	bard := bard.New(cookie1psid, cookie1psidts, cookie1psidcc, &logger)
 
 	// run in interactive mode
 	if flags.Changed("interactive") {
