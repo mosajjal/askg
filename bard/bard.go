@@ -38,9 +38,11 @@ type bardAnswer struct {
 
 // Bard is the main struct for the Bard AI
 type Bard struct {
-	Cookie string
-	logger *zerolog.Logger
-	answer bardAnswer
+	Cookie1PSID   string
+	Cookie1PSIDTS string
+	Cookie1PSIDCC string
+	logger        *zerolog.Logger
+	answer        bardAnswer
 
 	// Timeout in seconds
 	TimeoutSnim0e int
@@ -48,9 +50,11 @@ type Bard struct {
 }
 
 // New creates a new Bard AI instance. Cookie is the __Secure-1PSID cookie from Google
-func New(cookie string, l *zerolog.Logger) *Bard {
+func New(cookie1psid, cookie1psidts, cookie1psidcc string, l *zerolog.Logger) *Bard {
 	b := &Bard{
-		Cookie:        cookie,
+		Cookie1PSID:   cookie1psid,
+		Cookie1PSIDTS: cookie1psidts,
+		Cookie1PSIDCC: cookie1psidcc,
 		logger:        l,
 		TimeoutSnim0e: 5,
 		TimeoutQuery:  60,
@@ -75,10 +79,19 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	client.SetDebug(true)
 
 	client.SetHeaders(headers)
-	client.SetCookie(&http.Cookie{
-		Name:  "__Secure-1PSID",
-		Value: b.Cookie,
-	})
+	client.SetCookies([]*http.Cookie{
+		{
+			Name:  "__Secure-1PSID",
+			Value: b.Cookie1PSID,
+		}, {
+			Name:  "__Secure-1PSIDCC",
+			Value: b.Cookie1PSIDCC,
+		}, {
+			Name:  "__Secure-1PSIDTS",
+			Value: b.Cookie1PSIDTS,
+		},
+	},
+	)
 
 	// get snim0e value from bard
 	client.SetBaseURL("https://bard.google.com")
