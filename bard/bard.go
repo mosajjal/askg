@@ -158,6 +158,7 @@ func (b *Bard) Ask(prompt string) (string, error) {
 		client.SetTimeout(time.Duration(b.TimeoutQuery) * time.Second)
 	}
 	client.SetFormData(reqData)
+	client.SetJSONEscapeHTML(false)
 	client.SetQueryParams(reqParams)
 	client.SetDoNotParseResponse(true)
 	resp, err = client.R().Post("")
