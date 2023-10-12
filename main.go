@@ -126,7 +126,10 @@ func main() {
 	}
 
 	// run in single question mode
-	question := strings.Join(flags.Args(), " ")
+	var input_as_args string = strings.Join(flags.Args(), " ")
+	var input_as_stdin string = Read_stdin()
+	var question string = strings.Join([]string{input_as_args, input_as_stdin}, " ")
+	question = strings.TrimSpace(question)
 	if question == "" {
 		logger.Fatal().Msg("no question provided")
 	}
