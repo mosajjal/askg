@@ -7,11 +7,11 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// Reads input from a side file or from standard input (default behavior), but not both.
+// Reads input from a side file or from standard input, but not both.
 //
 // Parameters:
 //
-// * from: Path to a file whose contents will be appended to the prompt. If no path is specified, or path is -, read standard input.
+// * from: Path to a file whose contents will be appended to the prompt. If path is -, read standard input.
 // * logger: A zerolog logger to use for logging errors.
 //
 // Returns:
@@ -28,7 +28,7 @@ func Read_from_file_or_stdin(read_from string, logger *zerolog.Logger) string {
 		}
 		file_contents = string(file_contents_as_bytes)
 	} else {
-		// Read input from stdin (default behavior)
+		// Read input from stdin
 		stat, _ := os.Stdin.Stat()
 		if (stat.Mode() & os.ModeCharDevice) == 0 {
 			scanner := bufio.NewScanner(os.Stdin)
