@@ -51,6 +51,7 @@ func main() {
 	flags := cmd.Flags()
 	config := flags.StringP("config", "c", "$HOME/.bardcli.yaml", "path to YAML configuration file")
 	_ = flags.Bool("defaultconfig", false, "write the default config yaml file to stdout")
+	_ = flags.Bool("getcookie", false, "get the cookie from the browser")
 	_ = flags.BoolP("interactive", "i", false, "run in interactive/conversation mode. Bard will remember your previous questions and answers")
 	_ = flags.BoolP("version", "v", false, "show version info and exit")
 
@@ -58,6 +59,12 @@ func main() {
 		logger.Error().Msgf("failed to execute command: %s", err)
 		return
 	}
+
+	if flags.Changed("getcookie") {
+		getCookiesFromBrowser()
+		os.Exit(0)
+	}
+
 	// construct the ~/.bardcli.yaml in a cross-platform way
 	if !flags.Changed("config") {
 		home, err := os.UserHomeDir()
