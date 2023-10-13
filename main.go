@@ -50,6 +50,7 @@ func main() {
 	}
 	flags := cmd.Flags()
 	config := flags.StringP("config", "c", "$HOME/.bardcli.yaml", "path to YAML configuration file")
+	read_from := flags.StringP("file", "f", "-", "Path to a file whose contents will be appended to the prompt. If no path is specified, or path is -, read standard input.")
 	_ = flags.Bool("defaultconfig", false, "write the default config yaml file to stdout")
 	_ = flags.BoolP("interactive", "i", false, "run in interactive/conversation mode. Bard will remember your previous questions and answers")
 	_ = flags.BoolP("version", "v", false, "show version info and exit")
@@ -127,8 +128,8 @@ func main() {
 
 	// run in single question mode
 	var input_as_args string = strings.Join(flags.Args(), " ")
-	var input_as_stdin string = Read_stdin()
-	var question string = strings.Join([]string{input_as_args, input_as_stdin}, " ")
+	var appended_input string = Read_from_file_or_stdin(*read_from, &logger)
+	var question string = strings.Join([]string{input_as_args, appended_input}, " ")
 	question = strings.TrimSpace(question)
 	if question == "" {
 		logger.Fatal().Msg("no question provided")
