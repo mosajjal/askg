@@ -49,8 +49,10 @@ func main() {
 		},
 	}
 	flags := cmd.Flags()
+	const FILE_SEPARATOR string = "\n"
 	config := flags.StringP("config", "c", "$HOME/.bardcli.yaml", "path to YAML configuration file")
-	readFrom := flags.StringP("file", "f", "", "Path to a file whose contents will be appended to the prompt. If path is -, read standard input.")
+	_ = flags.StringSliceP("file", "f", nil, "Path to a file whose contents will be appended to the prompt. If path is -, read standard input.")
+	_ = flags.StringP("file-separator", "s", FILE_SEPARATOR, "")
 	_ = flags.Bool("defaultconfig", false, "write the default config yaml file to stdout")
 	_ = flags.BoolP("interactive", "i", false, "run in interactive/conversation mode. Bard will remember your previous questions and answers")
 	_ = flags.BoolP("version", "v", false, "show version info and exit")
@@ -127,17 +129,11 @@ func main() {
 	}
 
 	// run in single question mode
-	var promptAsArgs string = strings.Join(flags.Args(), " ")
-	var appendedPartOfPrompt string
-	if *readFrom != "" {
-		appendedPartOfPrompt = ReadFromFileOrStdin(*readFrom, &logger)
-	}
-	var question string = strings.Join([]string{promptAsArgs, appendedPartOfPrompt}, " ")
-	question = strings.TrimSpace(question)
-	if question == "" {
+	pQuestionBuffer := BuildPrompt(flags)
+	if pQuestionBuffer.Len() == 0 {
 		logger.Fatal().Msg("no question provided")
 	}
-	answer, err := bard.Ask(sanitizeQuestion(question))
+	answer, err := bard.Ask(sanitizeQuestion(pQuestionBuffer.String()))
 	if err != nil {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}
