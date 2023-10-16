@@ -49,10 +49,19 @@ func main() {
 		},
 	}
 	flags := cmd.Flags()
-	const FILE_SEPARATOR string = "\n"
+	const DEFAULT_FILE_SEPARATOR string = "\n"
 	config := flags.StringP("config", "c", "$HOME/.bardcli.yaml", "path to YAML configuration file")
-	_ = flags.StringSliceP("file", "f", nil, "Path to a file whose contents will be appended to the prompt. If path is -, read standard input.")
-	_ = flags.StringP("file-separator", "s", FILE_SEPARATOR, "")
+	_ = flags.StringSliceP("file", "f", nil, `Path to a file whose contents will be appended to the prompt. If path is -, read standard input. Multiple flag-value pairs are allowed, as well as multiple comma-separated values.
+
+Example of valid syntax:
+
+bard-cli -f "FILE1" -f - -f "FILE2,FILE3" "PROMPT_PART_1" "PROMPT_PART_2"
+
+The above command will result in a prompt being composed in the following order:
+
+<PROMPT_PART_1> <PROMPT_PART_2>`+DEFAULT_FILE_SEPARATOR+`<FILE1 contents>`+DEFAULT_FILE_SEPARATOR+`<stdin contents>`+DEFAULT_FILE_SEPARATOR+`<FILE2 contents>`+DEFAULT_FILE_SEPARATOR+`<FILE3 contents>
+`)
+	_ = flags.StringP("file-separator", "s", DEFAULT_FILE_SEPARATOR, "Custom string separator to insert before and between files' contents, in case the -f flag is invoked.")
 	_ = flags.Bool("defaultconfig", false, "write the default config yaml file to stdout")
 	_ = flags.BoolP("interactive", "i", false, "run in interactive/conversation mode. Bard will remember your previous questions and answers")
 	_ = flags.BoolP("version", "v", false, "show version info and exit")
