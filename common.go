@@ -16,8 +16,8 @@ import (
 //
 // Returns:
 //
-// Returns the input as a string.
-func ReadFromFileOrStdin(readFrom string, logger *zerolog.Logger) string {
+// Returns the pointer to the input string.
+func ReadFromFileOrStdin(readFrom string, logger *zerolog.Logger) *string {
 	var fileContents string
 	const READ_FROM_STDIN string = "-"
 	if readFrom != READ_FROM_STDIN {
@@ -37,5 +37,5 @@ func ReadFromFileOrStdin(readFrom string, logger *zerolog.Logger) string {
 			}
 		}
 	}
-	return fileContents
+	return &fileContents
 }
