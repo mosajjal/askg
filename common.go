@@ -17,25 +17,25 @@ import (
 // Returns:
 //
 // Returns the input as a string.
-func Read_from_file_or_stdin(read_from string, logger *zerolog.Logger) string {
-	var file_contents string
+func ReadFromFileOrStdin(readFrom string, logger *zerolog.Logger) string {
+	var fileContents string
 	const READ_FROM_STDIN string = "-"
-	if read_from != from_stdin {
+	if readFrom != READ_FROM_STDIN {
 		// Read input from a side file
-		file_contents_as_bytes, err := os.ReadFile(read_from)
+		fileContentsAsBytes, err := os.ReadFile(readFrom)
 		if err != nil {
-			logger.Fatal().Msgf("failed to load file %s: %s", read_from, err)
+			logger.Fatal().Msgf("failed to load file %s: %s", readFrom, err)
 		}
-		file_contents = string(file_contents_as_bytes)
+		fileContents = string(fileContentsAsBytes)
 	} else {
 		// Read input from stdin
 		stat, _ := os.Stdin.Stat()
 		if (stat.Mode() & os.ModeCharDevice) == 0 {
 			scanner := bufio.NewScanner(os.Stdin)
 			for scanner.Scan() {
-				file_contents += scanner.Text()
+				fileContents += scanner.Text()
 			}
 		}
 	}
-	return file_contents
+	return fileContents
 }
