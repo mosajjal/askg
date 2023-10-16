@@ -19,7 +19,7 @@ import (
 // Returns the input as a string.
 func Read_from_file_or_stdin(read_from string, logger *zerolog.Logger) string {
 	var file_contents string
-	var from_stdin string = "-"
+	const READ_FROM_STDIN string = "-"
 	if read_from != from_stdin {
 		// Read input from a side file
 		file_contents_as_bytes, err := os.ReadFile(read_from)
