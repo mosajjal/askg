@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/rs/zerolog"
@@ -79,4 +81,25 @@ func BuildPrompt(flags *pflag.FlagSet) *bytes.Buffer {
 		fullPromptAsBuffer.WriteString(*pNextPartOfPrompt)
 	}
 	return &fullPromptAsBuffer
+}
+
+// Returns absolute path to `bard-cli` home directory
+func AbsPathToBardCliBinaryHomeDir() string {
+	pathToBardCliBinary, err := os.Executable()
+	if err != nil {
+		logger.Error().Msgf("failed to determine bard-cli binary's location\n%s\n", err)
+		return err.Error()
+	}
+	return filepath.Dir(pathToBardCliBinary)
+}
+
+// Failsafe wrapper for os.exec.Command()
+func RunCommand(cmdName string, args ...string) string {
+	cmd := exec.Command(cmdName, args...)
+	stdout, stderr := cmd.Output()
+	if stderr != nil {
+		logger.Error().Msgf("failed to run command %q\n%s", cmd.String(), stderr)
+		return ""
+	}
+	return strings.TrimSuffix(string(stdout), "\n")
 }

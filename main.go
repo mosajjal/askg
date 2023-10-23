@@ -29,11 +29,6 @@ var logger = zerolog.New(os.Stderr).
 	Logger().
 	Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339, NoColor: nocolor})
 
-var (
-	version string = "UNKNOWN"
-	commit  string = "NOT_PROVIDED"
-)
-
 // Execute executes the root command.
 func main() {
 	cmd := &cobra.Command{
@@ -82,7 +77,20 @@ The above command will result in a prompt being composed in the following order:
 		return
 	}
 	if flags.Changed("version") {
-		fmt.Printf("bard version %s, commit %s\n", version, commit)
+		var (
+			version            string = "UNKNOWN"
+			commit             string = "NOT_PROVIDED"
+			bardCliHomeDir     string = AbsPathToBardCliBinaryHomeDir()
+			versionDataStr     string = RunCommand("git", "-C", bardCliHomeDir, "describe", "--tags")
+			dashFieldSeparator string = "-"
+		)
+		versionDataArr := strings.Split(versionDataStr, dashFieldSeparator)
+		if len(versionDataArr) >= 2 {
+			firstIndex, lastIndex := 0, len(versionDataArr)-1
+			version = versionDataArr[firstIndex]
+			commit = versionDataArr[lastIndex]
+		}
+		fmt.Printf("bard-cli version %s, commit %s\n", version, commit)
 		return
 	}
 	if flags.Changed("defaultconfig") {
