@@ -3,14 +3,42 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"os"
+	"os/user"
+	"path/filepath"
+	"runtime"
 
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 )
 
-func getCookiesFromBrowser() {
+func getChromeDefaultProfilePath() (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
+	var chromeProfilePath string
+	switch runtime.GOOS {
+	case "windows":
+		localAppData := os.Getenv("LOCALAPPDATA")
+		chromeProfilePath = filepath.Join(localAppData, `Google\Chrome\User Data\`)
+	case "darwin":
+		chromeProfilePath = filepath.Join(usr.HomeDir, `Library/Application Support/Google/Chrome/`)
+	case "linux":
+		chromeProfilePath = filepath.Join(usr.HomeDir, `.config/google-chrome/`)
+	default:
+		return "", fmt.Errorf("unsupported platform: %s", runtime.GOOS)
+	}
+	return chromeProfilePath, nil
+}
+
+func getCookiesFromBrowser(profile string) map[string]string {
+	if profile == "" {
+		profile = "Default"
+	}
 	cookieJar := make(map[string]string)
+	dir, _ := getChromeDefaultProfilePath()
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[3:],
 		// if user-data-dir is set, chrome won't load the default profile,
@@ -18,9 +46,8 @@ func getCookiesFromBrowser() {
 		// set it to empty to prevent chromedp from setting it to a temp directory.
 		chromedp.NoFirstRun,
 		chromedp.NoDefaultBrowserCheck,
-		chromedp.Flag("profile-directory", "Default"),
-		// BUG: this needs to be cross-platform
-		chromedp.UserDataDir(`/home/ali/.config/google-chrome`),
+		chromedp.Flag("profile-directory", profile),
+		chromedp.UserDataDir(dir),
 		//chromedp.UserDataDir(os.Getenv("CHROME_USER_DIR")),
 		// in headless mode, chrome won't load the default profile.
 		chromedp.Flag("headless", false),
@@ -31,12 +58,11 @@ func getCookiesFromBrowser() {
 
 	ctx, cancel := chromedp.NewContext(
 		ctx_,
-		chromedp.WithDebugf(log.Printf),
+		// chromedp.WithDebugf(log.Printf),
 	)
 	defer cancel()
 
-	err := chromedp.Run(ctx,
-		// BUG: if there's a window open, this fails. It should be able to use the open window.
+	if err := chromedp.Run(ctx,
 		chromedp.Navigate("https://bard.google.com"),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			cookies, err := network.GetCookies().Do(ctx)
@@ -48,12 +74,9 @@ func getCookiesFromBrowser() {
 				cookieJar[cookie.Name] = cookie.Value
 			}
 			return nil
-		}))
-
-	if err != nil {
+		})); err != nil {
 		logger.Fatal().Msgf("Failed to retrieve cookies: %v", err)
 	}
 
-	fmt.Printf("Cookie jar: %v\n", cookieJar)
-
+	return cookieJar
 }

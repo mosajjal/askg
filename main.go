@@ -61,7 +61,16 @@ func main() {
 	}
 
 	if flags.Changed("getcookie") {
-		getCookiesFromBrowser()
+		// TODO: make the profile name configurable
+		cookies := getCookiesFromBrowser("Default")
+		if len(cookies) == 0 {
+			logger.Fatal().Msg("no cookies found")
+		}
+		fmt.Printf("cookie1psid: %s\ncookie1psidts: %s\ncookie1psidcc: %s\n",
+			cookies["__Secure-1PSID"],
+			cookies["__Secure-1PSIDTS"],
+			cookies["__Secure-1PSIDCC"])
+		logger.Info().Msg("copy the above lines to your ~/.bardcli.yaml file")
 		os.Exit(0)
 	}
 
