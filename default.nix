@@ -7,12 +7,14 @@
         (import "${sources.gomod2nix}/overlay.nix")
       ];
     }
-  )
+  ),
+  pname? "bard-cli",
+  pversion ? "0.1"
 }:
 
 pkgs.buildGoApplication {
-  pname = "myapp";
-  version = "0.1";
+  pname = pname;
+  version = pversion;
   pwd = ./.;
   src = ./.;
   modules = ./gomod2nix.toml;
