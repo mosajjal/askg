@@ -7,7 +7,7 @@ require (
 	github.com/briandowns/spinner v1.23.0
 	github.com/c-bata/go-prompt v0.2.6
 	github.com/charmbracelet/glamour v0.6.0
-	github.com/go-resty/resty/v2 v2.10.0
+	github.com/go-resty/resty/v2 v2.11.0
 	github.com/knadh/koanf v1.5.0
 	github.com/rs/zerolog v1.31.0
 	github.com/spf13/cobra v1.7.0
