@@ -11,7 +11,7 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/rawbytes"
-	"github.com/mosajjal/bard-cli/bard"
+	"github.com/mosajjal/bard-cli/gemini"
 	"github.com/rs/zerolog"
 
 	_ "embed"
@@ -37,10 +37,10 @@ var (
 // Execute executes the root command.
 func main() {
 	cmd := &cobra.Command{
-		Use:   "bard",
-		Short: "bard is awesome",
-		Long: `bard is Google's AI model. This is a reverse engineered version of Bard on the web.
-		in order to use this, you first need to gain access to Bard in your browser,
+		Use:   "Gemini",
+		Short: "Gemini is awesome",
+		Long: `Use Google's AI model. This is a reverse engineered API of Gemini Web.
+		in order to use this, you first need to gain access to Gemini in your browser,
 		and then copy the cookie "__Secure-1PSID" using developer tools. If you don't know how, follow this guide:
 		https://developer.chrome.com/docs/devtools/application/cookies/
 		SECURITY NOTE: NEVER share your cookies with anyone. they can be used to impersonate you and steal your data.
@@ -63,7 +63,7 @@ The above command will result in a prompt being composed in the following order:
 `)
 	_ = flags.StringP("file-separator", "s", DEFAULT_FILE_SEPARATOR, "Custom string separator to insert before and between files' contents, in case the -f flag is invoked.")
 	_ = flags.Bool("defaultconfig", false, "write the default config yaml file to stdout")
-	_ = flags.BoolP("interactive", "i", false, "run in interactive/conversation mode. Bard will remember your previous questions and answers")
+	_ = flags.BoolP("interactive", "i", false, "run in interactive/conversation mode. Google will remember your previous questions and answers")
 	_ = flags.BoolP("version", "v", false, "show version info and exit")
 
 	if err := cmd.Execute(); err != nil {
@@ -82,7 +82,7 @@ The above command will result in a prompt being composed in the following order:
 		return
 	}
 	if flags.Changed("version") {
-		fmt.Printf("bard version %s, commit %s\n", version, commit)
+		fmt.Printf("gemini version %s, commit %s\n", version, commit)
 		return
 	}
 	if flags.Changed("defaultconfig") {
@@ -120,7 +120,7 @@ The above command will result in a prompt being composed in the following order:
 		zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	}
 
-	// set up the bard client
+	// set up the Gemini client
 	cookie1psid := k.String("cookie")
 	// cookie1psid is an alias for cookie
 	if cookie1psid == "" {
@@ -129,11 +129,11 @@ The above command will result in a prompt being composed in the following order:
 	cookie1psidts := k.String("cookie1psidts")
 	cookie1psidcc := k.String("cookie1psidcc")
 
-	bard := bard.New(cookie1psid, cookie1psidts, cookie1psidcc, &logger)
+	Gemini := gemini.New(cookie1psid, cookie1psidts, cookie1psidcc, &logger)
 
 	// run in interactive mode
 	if flags.Changed("interactive") {
-		RunInteractive(bard)
+		RunInteractive(Gemini)
 		return
 	}
 
@@ -142,7 +142,7 @@ The above command will result in a prompt being composed in the following order:
 	if pQuestionBuffer.Len() == 0 {
 		logger.Fatal().Msg("no question provided")
 	}
-	answer, err := bard.Ask(sanitizeQuestion(pQuestionBuffer.String()))
+	answer, err := Gemini.Ask(sanitizeQuestion(pQuestionBuffer.String()))
 	if err != nil {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}

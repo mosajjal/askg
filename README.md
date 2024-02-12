@@ -1,6 +1,6 @@
-# Bard CLI
+# Gemini (Bard) CLI
 
-Use Google Bard in your CLI!
+Use Gemini in your CLI!
 
 ## Installation
 
@@ -54,7 +54,7 @@ If you are searching for the meaning of life, I encourage you to explore your ow
 
 ## Use a Proxy
 
-To use a HTTP(s) or SOCKS4/5 proxy to access bard, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `bard-cli`. 
+To use a HTTP(s) or SOCKS4/5 proxy to access Google, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `bard-cli`. 
 
 ## Screenshots
 

@@ -1,4 +1,4 @@
-package bard
+package gemini
 
 import (
 	"bytes"
@@ -16,17 +16,17 @@ import (
 )
 
 var headers map[string]string = map[string]string{
-	"Host":          "bard.google.com",
+	"Host":          "gemini.google.com",
 	"X-Same-Domain": "1",
-	"User-Agent":    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+	"User-Agent":    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
 	"Content-Type":  "application/x-www-form-urlencoded;charset=utf-8",
-	"Origin":        "https://bard.google.com",
-	"Referer":       "https://bard.google.com/",
+	"Origin":        "https://gemini.google.com",
+	"Referer":       "https://gemini.google.com/",
 }
 
-const bardURL string = "https://bard.google.com/_/BardChatUi/data/assistant.lamda.BardFrontendService/StreamGenerate"
+const geminiURL string = "https://gemini.google.com/_/BardChatUi/data/assistant.lamda.BardFrontendService/StreamGenerate"
 
-type bardAnswer struct {
+type serverAnswer struct {
 	Content           string   `json:"content"`
 	ConversationID    string   `json:"conversationId"`
 	ResponseID        string   `json:"responseId"`
@@ -36,22 +36,22 @@ type bardAnswer struct {
 	Choices           []string `json:"choices"`
 }
 
-// Bard is the main struct for the Bard AI
-type Bard struct {
+// Gemini is the main struct for the Gemini AI
+type Gemini struct {
 	Cookie1PSID   string
 	Cookie1PSIDTS string
 	Cookie1PSIDCC string
 	logger        *zerolog.Logger
-	answer        bardAnswer
+	answer        serverAnswer
 
 	// Timeout in seconds
 	TimeoutSnim0e int
 	TimeoutQuery  int
 }
 
-// New creates a new Bard AI instance. Cookie is the __Secure-1PSID cookie from Google
-func New(cookie1psid, cookie1psidts, cookie1psidcc string, l *zerolog.Logger) *Bard {
-	b := &Bard{
+// New creates a new Gemini AI instance. Cookie is the __Secure-1PSID cookie from Google
+func New(cookie1psid, cookie1psidts, cookie1psidcc string, l *zerolog.Logger) *Gemini {
+	b := &Gemini{
 		Cookie1PSID:   cookie1psid,
 		Cookie1PSIDTS: cookie1psidts,
 		Cookie1PSIDCC: cookie1psidcc,
@@ -59,19 +59,19 @@ func New(cookie1psid, cookie1psidts, cookie1psidcc string, l *zerolog.Logger) *B
 		TimeoutSnim0e: 5,
 		TimeoutQuery:  60,
 	}
-	b.answer = bardAnswer{}
+	b.answer = serverAnswer{}
 	return b
 }
 
-// Clear clears the bard answer IDs
-func (b *Bard) Clear() {
+// Clear clears the server answer IDs
+func (b *Gemini) Clear() {
 	b.answer.ChoiceID = ""
 	b.answer.ConversationID = ""
 	b.answer.ResponseID = ""
 }
 
-// Ask generates a Bard AI response and returns it to the user
-func (b *Bard) Ask(prompt string) (string, error) {
+// Ask generates a Gemini AI response and returns it to the user
+func (b *Gemini) Ask(prompt string) (string, error) {
 	// Create a Resty Client
 	client := resty.New()
 
@@ -93,8 +93,8 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	},
 	)
 
-	// get snim0e value from bard
-	client.SetBaseURL("https://bard.google.com")
+	// get snim0e value from Google
+	client.SetBaseURL("https://gemini.google.com")
 	if b.TimeoutSnim0e > 0 {
 		client.SetTimeout(time.Duration(b.TimeoutSnim0e) * time.Second)
 	}
@@ -109,7 +109,7 @@ func (b *Bard) Ask(prompt string) (string, error) {
 
 	// req paramters for the actual request
 	reqParams := map[string]string{
-		"bl":     "boq_assistant-bard-web-server_20230510.09_p1",
+		"bl":     "boq_assistant-bard-web-server_20240201.08_p9",
 		"_reqid": fmt.Sprintf("%d", rand.IntnRange(100000, 999999)),
 		"rt":     "c",
 	}
@@ -153,7 +153,7 @@ func (b *Bard) Ask(prompt string) (string, error) {
 		"at":    snim0e,
 	}
 
-	client.SetBaseURL(bardURL)
+	client.SetBaseURL(geminiURL)
 	if b.TimeoutQuery > 0 {
 		client.SetTimeout(time.Duration(b.TimeoutQuery) * time.Second)
 	}
@@ -187,7 +187,7 @@ func (b *Bard) Ask(prompt string) (string, error) {
 	// get the main answer
 	res, ok := fullRes[0][2].(string)
 	if !ok {
-		return "", fmt.Errorf("failed to get answer from bard")
+		return "", fmt.Errorf("failed to get answer from Gemini")
 	}
 
 	b.answer.ConversationID = gjson.Get(res, "1.0").String()

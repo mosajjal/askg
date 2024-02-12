@@ -1,4 +1,4 @@
-package bard
+package gemini
 
 import "github.com/rs/zerolog"
 

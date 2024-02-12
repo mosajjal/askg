@@ -10,14 +10,14 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/c-bata/go-prompt"
 	"github.com/charmbracelet/glamour"
-	"github.com/mosajjal/bard-cli/bard"
+	"github.com/mosajjal/bard-cli/gemini"
 )
 
 func completer(d prompt.Document) []prompt.Suggest {
 	s := []prompt.Suggest{
 		{Text: "!quit", Description: "Quit the application"},
 		{Text: "!editor", Description: "use $EDITOR to write the question"},
-		{Text: "!reset", Description: "Reset the bard conversation"},
+		{Text: "!reset", Description: "Reset the conversation"},
 		{Text: "!write <file>", Description: "Write the conversation to a file"},
 	}
 	return prompt.FilterHasPrefix(s, d.Text, true)
@@ -44,11 +44,11 @@ func sanitizeQuestion(question string) string {
 	// return url.QueryEscape(question)
 }
 
-func normalQ(bard *bard.Bard, question string) string {
+func normalQ(g *gemini.Gemini, question string) string {
 	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
 	s.UpdateCharSet(spinner.CharSets[11])
 	s.Start()
-	answer, err := bard.Ask(sanitizeQuestion(question))
+	answer, err := g.Ask(sanitizeQuestion(question))
 	if err != nil {
 		fmt.Println(err)
 		answer = ""
@@ -58,7 +58,7 @@ func normalQ(bard *bard.Bard, question string) string {
 }
 
 // RunInteractive runs the interactive mode of the CLI
-func RunInteractive(bard *bard.Bard) {
+func RunInteractive(g *gemini.Gemini) {
 	fmt.Println("press <tab> to see the list of commands")
 	outFile := os.Stdout
 	for {
@@ -79,10 +79,10 @@ func RunInteractive(bard *bard.Bard) {
 			// trim the last newline
 			editorQ = editorQ[:len(editorQ)-1]
 			fmt.Fprintln(outFile, "Q: "+text)
-			renderToMD(outFile, normalQ(bard, editorQ))
+			renderToMD(outFile, normalQ(g, editorQ))
 			continue
 		case strings.HasPrefix(text, "!reset"):
-			bard.Clear()
+			g.Clear()
 			continue
 		case strings.TrimSpace(text) == "":
 			continue
@@ -107,7 +107,7 @@ func RunInteractive(bard *bard.Bard) {
 		default:
 			// Write the question back as well
 			fmt.Fprintln(outFile, "Q: "+text)
-			renderToMD(outFile, normalQ(bard, text))
+			renderToMD(outFile, normalQ(g, text))
 			continue
 		}
 
