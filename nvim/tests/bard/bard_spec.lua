@@ -1,4 +1,4 @@
-local plugin = require("bard")
+local plugin = require("askg")
 
 describe("setup", function()
   it("works with default", function()

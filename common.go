@@ -44,13 +44,16 @@ func ReadFromFileOrStdin(readFrom string, logger *zerolog.Logger) *string {
 }
 
 // Builds the full prompt from the provided arguments, with the positional arguments being the first part of the prompt, followed by the named arguments -f. For example, the command
-//   bard-cli -f "FILE1" -f - -f "FILE2,FILE3" "PROMPT_PART_1" "PROMPT_PART_2"
+//
+//	askg -f "FILE1" -f - -f "FILE2,FILE3" "PROMPT_PART_1" "PROMPT_PART_2"
+//
 // will result in the following prompt:
-//   <PROMPT_PART_1> <PROMPT_PART_2>
-//   <FILE1 contents>
-//   <stdin contents>
-//   <FILE2 contents>
-//   <FILE3 contents>
+//
+//	<PROMPT_PART_1> <PROMPT_PART_2>
+//	<FILE1 contents>
+//	<stdin contents>
+//	<FILE2 contents>
+//	<FILE3 contents>
 //
 // Parameters:
 //

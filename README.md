@@ -5,25 +5,25 @@ Use Gemini in your CLI!
 ## Installation
 
 ```bash
-go install github.com/mosajjal/bard-cli@latest
+go install github.com/mosajjal/askg@latest
 ```
 
-or download the binary from [releases](//github.com/mosajjal/bard-cli/releases/latest)
+or download the binary from [releases](//github.com/mosajjal/askg/releases/latest)
 
-In order to use Bard CLI, you first need to gain access to Bard in your browser, and then copy the cookie "__Secure-1PSID" using developer tools. If you don't know how, follow [this guide](https://developer.chrome.com/docs/devtools/application/cookies/)
+In order to use the CLI, you first need to gain access to Gemini in your browser, and then copy the cookie "__Secure-1PSID" using developer tools. If you don't know how, follow [this guide](https://developer.chrome.com/docs/devtools/application/cookies/)
 
 IMPORTANT NOTE: never share your cookies with anyone, as they can be used to impersonate you and steal your data.
 
 Then create the default configuration file using the following command:
 
 ```bash
-$ bard-cli --defaultconfig
-# 2023-05-15T21:06:42+12:00 INF wrote default config to /home/USER/.bardcli.yaml
+$ askg --defaultconfig
+# 2023-05-15T21:06:42+12:00 INF wrote default config to /home/USER/.askg.yaml
 ```
 
 and then edit the file to add your cookie.
 ```bash
-$ cat ~/.bardcli.yaml
+$ cat ~/.askg.yaml
 cookie: YOURLONG-COOKIE.
 log_level: warn
 ```
@@ -31,7 +31,7 @@ log_level: warn
 then just start using it!
 
 ```md
-$ bard-cli "what is the meaning of life?"
+$ askg "what is the meaning of life?"
 The meaning of life is a question that has been asked by philosophers and theologians for centuries. There is no one answer that will satisfy everyone, but some possible answers include:
 
 * To find happiness and fulfillment.
@@ -54,7 +54,7 @@ If you are searching for the meaning of life, I encourage you to explore your ow
 
 ## Use a Proxy
 
-To use a HTTP(s) or SOCKS4/5 proxy to access Google, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `bard-cli`. 
+To use a HTTP(s) or SOCKS4/5 proxy to access Google, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `askg`. 
 
 ## Screenshots
 
@@ -68,21 +68,21 @@ To use a HTTP(s) or SOCKS4/5 proxy to access Google, set `HTTP_PROXY` as well as
 in your neovim config, add the following plugin
 
 ```lua
-Plug 'mosajjal/bard-cli', {'rtp': 'nvim'}
+Plug 'mosajjal/askg', {'rtp': 'nvim'}
 ```
 
-by default, the plugin looks for `bard-cli` in `$HOME/go/bin/bard-cli` and the configuration file at `$HOME/.bardcli.yaml`
+by default, the plugin looks for `askg` in `$HOME/go/bin/askg` and the configuration file at `$HOME/.askg.yaml`
 
-to change that, run the setup function of bard using the following
+to change that, run the setup function of Gemini using the following
 
 ```lua
-lua require('bard').setup({bardcli_path="$HOME/go/bin/bard-cli", bardcli_config_path="$HOME/.bardcli.yaml"})
+lua require('askg').setup({askg_path="$HOME/go/bin/askg", askg_config_path="$HOME/.askg.yaml"})
 ```
 
 ## Usage
 
 `
-:Askbard "write hello world in javascript"
+:Askg "write hello world in javascript"
 `
 
 the above will open a new vsplit and return the results in the new buffer

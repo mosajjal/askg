@@ -11,7 +11,7 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/rawbytes"
-	"github.com/mosajjal/bard-cli/gemini"
+	"github.com/mosajjal/askg/gemini"
 	"github.com/rs/zerolog"
 
 	_ "embed"
@@ -50,12 +50,12 @@ func main() {
 	}
 	flags := cmd.Flags()
 	const DEFAULT_FILE_SEPARATOR string = "\n"
-	config := flags.StringP("config", "c", "$HOME/.bardcli.yaml", "path to YAML configuration file")
+	config := flags.StringP("config", "c", "$HOME/.askg.yaml", "path to YAML configuration file")
 	_ = flags.StringSliceP("file", "f", nil, `Path to a file whose contents will be appended to the prompt. If path is -, read standard input. Multiple flag-value pairs are allowed, as well as multiple comma-separated values.
 
 Example of valid syntax:
 
-bard-cli -f "FILE1" -f - -f "FILE2,FILE3" "PROMPT_PART_1" "PROMPT_PART_2"
+askg -f "FILE1" -f - -f "FILE2,FILE3" "PROMPT_PART_1" "PROMPT_PART_2"
 
 The above command will result in a prompt being composed in the following order:
 
@@ -70,13 +70,13 @@ The above command will result in a prompt being composed in the following order:
 		logger.Error().Msgf("failed to execute command: %s", err)
 		return
 	}
-	// construct the ~/.bardcli.yaml in a cross-platform way
+	// construct the ~/.askg.yaml in a cross-platform way
 	if !flags.Changed("config") {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			logger.Fatal().Msgf("failed to get user home directory: %s", err)
 		}
-		*config = filepath.Join(home, ".bardcli.yaml")
+		*config = filepath.Join(home, ".askg.yaml")
 	}
 	if flags.Changed("help") {
 		return

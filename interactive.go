@@ -10,7 +10,7 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/c-bata/go-prompt"
 	"github.com/charmbracelet/glamour"
-	"github.com/mosajjal/bard-cli/gemini"
+	"github.com/mosajjal/askg/gemini"
 )
 
 func completer(d prompt.Document) []prompt.Suggest {

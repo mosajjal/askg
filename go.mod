@@ -1,4 +1,4 @@
-module github.com/mosajjal/bard-cli
+module github.com/mosajjal/askg
 
 go 1.21
 

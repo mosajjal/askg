@@ -1,5 +1,5 @@
 # cookie1psid (__Secure-1PSID), cookie1psidts (__Secure-1PSIDTS) and cookie1psidcc (__Secure-1PSIDCC)
-# are obtained from an active browser session with Bard open.
+# are obtained from an active browser session with the site open.
 # obtain cookies from developer tools. If you don't know how, follow this guide:
 # https://developer.chrome.com/docs/devtools/application/cookies/
 # the format of the value will look like this:

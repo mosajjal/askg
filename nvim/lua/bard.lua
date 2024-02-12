@@ -1,11 +1,11 @@
 -- main module file
-local module = require("bard.module")
+local module = require("askg.module")
 
 local M = {}
 M.config = {
   -- default config
-  bardcli_path = "$HOME/go/bin/bard-cli",
-  bardcli_config_path = "$HOME/.bardcli.yaml",
+  askg_path = "$HOME/go/bin/askg",
+  askg_config_path = "$HOME/.askg.yaml",
 }
 
 -- setup is the public method to setup your plugin
@@ -17,7 +17,7 @@ end
 
 -- "ask" is a public method for the plugin
 M.ask = function(opts)
-  module.askbard(opts.args, M.config.bardcli_path, M.config.bardcli_config_path)
+  module.askg(opts.args, M.config.askg_path, M.config.askg_config_path)
 end
 
 return M
