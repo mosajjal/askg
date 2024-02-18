@@ -19,7 +19,7 @@ jobs:
     - name: Set up Go 3.x
       uses: actions/setup-go@v5
       with:
-        go-version: '^1.20'
+        go-version: '^1.22'
 
     - name: Get dependencies
       run: |
@@ -29,8 +29,16 @@ jobs:
             dep ensure
         fi
 
-    - name: Build
+    - name: Build askg
       run: go build -v .
+      working-directory: ./cmd/askg
+    - name: Build askgd
+      run: go build -v .
+      working-directory: ./cmd/askgd
 
-    - name: Test
+    - name: Test askg
       run: go test -v ./...
+      working-directory: ./cmd/askg
+    - name: Test askgd
+      run: go test -v ./...
+      working-directory: ./cmd/askgd
