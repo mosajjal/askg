@@ -4,31 +4,35 @@ Use Gemini in your CLI!
 
 ## Installation
 
-```bash
-go install github.com/mosajjal/askg@latest
+`askg` has now a client/server architecture. `askgd` is the daemon that runs and always listens on `localhost:12345` for RPC requests. `askg` is the client that sends the requests to the daemon.
+
+### Install the daemon
+
+```sh
+go install github.com/mosajjal/askg/cmd/askgd@latest
 ```
 
-or download the binary from [releases](//github.com/mosajjal/askg/releases/latest)
+in order to run the daemon, first run the `browser` subcommand to open a browser and login to `gemini.google.com`. currently only Chrome is supported. Make sure that you already open the browser and login to `gemini.google.com` before running the `browser` subcommand.
 
-In order to use the CLI, you first need to gain access to Gemini in your browser, and then copy the cookie "__Secure-1PSID" using developer tools. If you don't know how, follow [this guide](https://developer.chrome.com/docs/devtools/application/cookies/)
-
-IMPORTANT NOTE: never share your cookies with anyone, as they can be used to impersonate you and steal your data.
-
-Then create the default configuration file using the following command:
-
-```bash
-$ askg --defaultconfig
-# 2023-05-15T21:06:42+12:00 INF wrote default config to /home/USER/.askg.yaml
+```sh
+$ askgd browser
 ```
 
-and then edit the file to add your cookie.
-```bash
-$ cat ~/.askg.yaml
-cookie: YOURLONG-COOKIE.
-log_level: warn
+then run the daemon using the following command
+
+```sh
+$ askgd run
 ```
 
-then just start using it!
+the daemon will now listen on `localhost:12345` for RPC requests, it also rotates and commits cookies automatically. 
+
+```sh
+
+### Install the client
+
+```sh
+go install github.com/mosajjal/askg/cmd/askg@latest
+```
 
 ```md
 $ askg "what is the meaning of life?"
@@ -55,12 +59,6 @@ If you are searching for the meaning of life, I encourage you to explore your ow
 ## Use a Proxy
 
 To use a HTTP(s) or SOCKS4/5 proxy to access Google, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `askg`. 
-
-## Screenshots
-
-![single question](static/singlequestion.png)
-
-![interactive](static/interactive.png)
 
 
 ## Use as a neovim plugin

@@ -15,6 +15,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/rand"
 )
 
+type Cookies map[string]string
+
 var headers map[string]string = map[string]string{
 	"Host":          "gemini.google.com",
 	"X-Same-Domain": "1",
@@ -38,11 +40,9 @@ type serverAnswer struct {
 
 // Gemini is the main struct for the Gemini AI
 type Gemini struct {
-	Cookie1PSID   string
-	Cookie1PSIDTS string
-	Cookie1PSIDCC string
-	logger        *zerolog.Logger
-	answer        serverAnswer
+	Cookies map[string]string
+	logger  *zerolog.Logger
+	answer  serverAnswer
 
 	// Timeout in seconds
 	TimeoutSnim0e int
@@ -50,24 +50,15 @@ type Gemini struct {
 }
 
 // New creates a new Gemini AI instance. Cookie is the __Secure-1PSID cookie from Google
-func New(cookie1psid, cookie1psidts, cookie1psidcc string, l *zerolog.Logger) *Gemini {
+func New(l *zerolog.Logger, cookies Cookies) *Gemini {
 	b := &Gemini{
-		Cookie1PSID:   cookie1psid,
-		Cookie1PSIDTS: cookie1psidts,
-		Cookie1PSIDCC: cookie1psidcc,
+		Cookies:       cookies,
 		logger:        l,
 		TimeoutSnim0e: 5,
 		TimeoutQuery:  60,
 	}
 	b.answer = serverAnswer{}
 	return b
-}
-
-// Clear clears the server answer IDs
-func (b *Gemini) Clear() {
-	b.answer.ChoiceID = ""
-	b.answer.ConversationID = ""
-	b.answer.ResponseID = ""
 }
 
 // Ask generates a Gemini AI response and returns it to the user
@@ -79,19 +70,12 @@ func (b *Gemini) Ask(prompt string) (string, error) {
 	client.SetDebug(true)
 
 	client.SetHeaders(headers)
-	client.SetCookies([]*http.Cookie{
-		{
-			Name:  "__Secure-1PSID",
-			Value: b.Cookie1PSID,
-		}, {
-			Name:  "__Secure-1PSIDCC",
-			Value: b.Cookie1PSIDCC,
-		}, {
-			Name:  "__Secure-1PSIDTS",
-			Value: b.Cookie1PSIDTS,
-		},
-	},
-	)
+	for k, v := range b.Cookies {
+		client.SetCookie(&http.Cookie{
+			Name:  k,
+			Value: v,
+		})
+	}
 
 	// get snim0e value from Google
 	client.SetBaseURL("https://gemini.google.com")

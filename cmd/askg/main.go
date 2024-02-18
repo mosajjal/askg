@@ -11,8 +11,8 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/rawbytes"
-	"github.com/mosajjal/askg/gemini"
 	"github.com/rs/zerolog"
+	"github.com/valyala/gorpc"
 
 	_ "embed"
 
@@ -120,20 +120,18 @@ The above command will result in a prompt being composed in the following order:
 		zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	}
 
-	// set up the Gemini client
-	cookie1psid := k.String("cookie")
-	// cookie1psid is an alias for cookie
-	if cookie1psid == "" {
-		cookie1psid = k.String("cookie1psid")
+	c := &gorpc.Client{
+		// TCP address of the server.
+		Addr: "127.0.0.1:12345",
 	}
-	cookie1psidts := k.String("cookie1psidts")
-	cookie1psidcc := k.String("cookie1psidcc")
-
-	Gemini := gemini.New(cookie1psid, cookie1psidts, cookie1psidcc, &logger)
+	c.Start()
 
 	// run in interactive mode
 	if flags.Changed("interactive") {
-		RunInteractive(Gemini)
+		RunInteractive(func(prompt string) (string, error) {
+			res, err := c.Call(sanitizeQuestion(prompt))
+			return res.(string), err
+		})
 		return
 	}
 
@@ -142,11 +140,11 @@ The above command will result in a prompt being composed in the following order:
 	if pQuestionBuffer.Len() == 0 {
 		logger.Fatal().Msg("no question provided")
 	}
-	answer, err := Gemini.Ask(sanitizeQuestion(pQuestionBuffer.String()))
+
+	res, err := c.Call(sanitizeQuestion(pQuestionBuffer.String()))
 	if err != nil {
 		logger.Fatal().Msgf("failed to ask question: %s", err)
 	}
 
-	renderToMD(os.Stdout, answer)
-
+	renderToMD(os.Stdout, res.(string))
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/c-bata/go-prompt"
 	"github.com/charmbracelet/glamour"
-	"github.com/mosajjal/askg/gemini"
 )
 
 func completer(d prompt.Document) []prompt.Suggest {
@@ -44,11 +43,11 @@ func sanitizeQuestion(question string) string {
 	// return url.QueryEscape(question)
 }
 
-func normalQ(g *gemini.Gemini, question string) string {
+func normalQ(askFn func(string) (string, error), question string) string {
 	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
 	s.UpdateCharSet(spinner.CharSets[11])
 	s.Start()
-	answer, err := g.Ask(sanitizeQuestion(question))
+	answer, err := askFn(sanitizeQuestion(question))
 	if err != nil {
 		fmt.Println(err)
 		answer = ""
@@ -58,7 +57,7 @@ func normalQ(g *gemini.Gemini, question string) string {
 }
 
 // RunInteractive runs the interactive mode of the CLI
-func RunInteractive(g *gemini.Gemini) {
+func RunInteractive(askFn func(string) (string, error)) {
 	fmt.Println("press <tab> to see the list of commands")
 	outFile := os.Stdout
 	for {
@@ -79,10 +78,10 @@ func RunInteractive(g *gemini.Gemini) {
 			// trim the last newline
 			editorQ = editorQ[:len(editorQ)-1]
 			fmt.Fprintln(outFile, "Q: "+text)
-			renderToMD(outFile, normalQ(g, editorQ))
+			renderToMD(outFile, normalQ(askFn, editorQ))
 			continue
 		case strings.HasPrefix(text, "!reset"):
-			g.Clear()
+			// TODO: fix
 			continue
 		case strings.TrimSpace(text) == "":
 			continue
@@ -107,9 +106,8 @@ func RunInteractive(g *gemini.Gemini) {
 		default:
 			// Write the question back as well
 			fmt.Fprintln(outFile, "Q: "+text)
-			renderToMD(outFile, normalQ(g, text))
+			renderToMD(outFile, normalQ(askFn, text))
 			continue
 		}
-
 	}
 }
