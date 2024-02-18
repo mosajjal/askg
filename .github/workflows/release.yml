@@ -28,7 +28,19 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
-        goversion: 1.20.3
+        goversion: 1.22.0
+        project_path: ./cmd/askg
+        ldflags: "-s -w -X main.version=${{ github.event.release.tag_name }} -X main.commit=${{ github.sha }}"
+        build_flags: -v
+    - uses: wangyoucao577/go-release-action@master
+      env:
+        CGO_ENABLED: 0 # support alpine
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
+        goversion: 1.22.0
+        project_path: ./cmd/askgd
         ldflags: "-s -w -X main.version=${{ github.event.release.tag_name }} -X main.commit=${{ github.sha }}"
         build_flags: -v
 
