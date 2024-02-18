@@ -26,7 +26,6 @@ $ askgd run
 
 the daemon will now listen on `localhost:12345` for RPC requests, it also rotates and commits cookies automatically. 
 
-```sh
 
 ### Install the client
 
