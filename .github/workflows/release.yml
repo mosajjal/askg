@@ -30,6 +30,7 @@ jobs:
         goarch: ${{ matrix.goarch }}
         goversion: 1.22.0
         project_path: ./cmd/askg
+        binary_name: askg
         ldflags: "-s -w -X main.version=${{ github.event.release.tag_name }} -X main.commit=${{ github.sha }}"
         build_flags: -v
     - uses: wangyoucao577/go-release-action@master
@@ -41,6 +42,7 @@ jobs:
         goarch: ${{ matrix.goarch }}
         goversion: 1.22.0
         project_path: ./cmd/askgd
+        binary_name: askgd
         ldflags: "-s -w -X main.version=${{ github.event.release.tag_name }} -X main.commit=${{ github.sha }}"
         build_flags: -v
 
