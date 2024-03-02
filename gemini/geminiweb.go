@@ -38,6 +38,10 @@ type serverAnswer struct {
 	Choices           []string `json:"choices"`
 }
 
+type AI interface {
+	Ask(prompt string) (string, error)
+}
+
 // Gemini is the main struct for the Gemini AI
 type Gemini struct {
 	Cookies map[string]string
@@ -49,8 +53,8 @@ type Gemini struct {
 	TimeoutQuery  int
 }
 
-// New creates a new Gemini AI instance. Cookie is the __Secure-1PSID cookie from Google
-func New(l *zerolog.Logger, cookies Cookies) *Gemini {
+// NewWeb creates a new Gemini AI instance. Cookies is all the cookies from a browser session
+func NewWeb(l *zerolog.Logger, cookies Cookies) AI {
 	b := &Gemini{
 		Cookies:       cookies,
 		logger:        l,
