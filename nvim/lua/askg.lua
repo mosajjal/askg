@@ -17,7 +17,7 @@ end
 
 -- "ask" is a public method for the plugin
 M.ask = function(opts)
-  module.askg(opts.args, M.config.askg_path, M.config.askg_config_path)
+  module.askg(opts.args, M.config.askg_path)
 end
 
 return M

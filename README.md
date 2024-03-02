@@ -4,7 +4,7 @@ Use Gemini in your CLI!
 
 ## Installation
 
-`askg` has now a client/server architecture. `askgd` is the daemon that runs and always listens on `localhost:12345` for RPC requests. `askg` is the client that sends the requests to the daemon.
+askg (fromerly `bard-cli`) has two component: `askgd` and `askg`. `askgd` is the daemon that runs and always listens on `localhost:12345` for RPC requests. `askg` is the client that sends the requests to the daemon.
 
 ### Install the daemon
 
@@ -12,7 +12,20 @@ Use Gemini in your CLI!
 go install github.com/mosajjal/askg/cmd/askgd@latest
 ```
 
-in order to run the daemon, first run the `browser` subcommand to open a browser and login to `gemini.google.com`. currently only Chrome is supported. Make sure that you already open the browser and login to `gemini.google.com` before running the `browser` subcommand.
+`askgd` can run in two modes: browser and API. the API method is far more stable and reliable than the browser method. In browser mode, all your Google.com cookies are saved on disk (`~/.askgbrowser.yml`) so it's also inherintly less safe than API. 
+
+#### API mode
+
+first, grab an API key from Google AI studio and set it as an environment variable, then the daemon can be run using the following command
+
+```sh
+$ export ASKG_API_KEY="your_api_key"
+$ askgd runapi
+```
+
+#### Browser mode
+
+in order to run the daemon, first run the `browser` subcommand to open a browser and login to `gemini.google.com`. currently only Chrome is supported. Make sure that you open the browser, login to `gemini.google.com`, fully close all the browser sessions, and then run the `browser` subcommand.
 
 ```sh
 $ askgd browser
@@ -24,7 +37,7 @@ then run the daemon using the following command
 $ askgd run
 ```
 
-the daemon will now listen on `localhost:12345` for RPC requests, it also rotates and commits cookies automatically. 
+the daemon will now listen on `localhost:12345` for RPC requests, it also rotates and commits cookies automatically.
 
 
 ### Install the client
@@ -57,8 +70,7 @@ If you are searching for the meaning of life, I encourage you to explore your ow
 
 ## Use a Proxy
 
-To use a HTTP(s) or SOCKS4/5 proxy to access Google, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `askg`. 
-
+To use a HTTP(s) or SOCKS4/5 proxy to access Google, set `HTTP_PROXY` as well as `HTTPS_PROXY` environment variables before running `askgd`.
 
 ## Use as a neovim plugin
 

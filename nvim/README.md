@@ -8,12 +8,12 @@ in your neovim config, add the following plugin
 Plug 'mosajjal/askg', {'rtp': 'nvim'}
 ```
 
-by default, the plugin looks for `askg` in `$HOME/go/bin/askg` and the configuration file at `$HOME/.askg.yaml`
+by default, the plugin looks for `askg` in `$HOME/go/bin/askg`.
 
 to change that, run the setup function of Gemini using the following
 
 ```lua
-lua require('askg').setup({askg_path="$HOME/go/bin/askg", askg_config_path="$HOME/.askg.yaml"})
+lua require('askg').setup({askg_path="$HOME/go/bin/askg"})
 ```
 
 ## Usage

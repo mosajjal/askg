@@ -1,8 +1,8 @@
 -- module represents a lua module for the plugin
 local M = {}
 
-M.askg = function(question, askg_path, askg_config_path)
-    local cmd = "sh -c 'NO_COLOR=true " .. askg_path .. " -c " .. askg_config_path .. " " .. question .. " 2>&1'"
+M.askg = function(question, askg_path)
+    local cmd = "sh -c 'NO_COLOR=true " .. askg_path .. " " .. question .. " 2>&1'"
     local handler = io.popen(cmd)
     local result = handler:read("*all")
     local succeeded, error_msg, retcode  = handler:close()
