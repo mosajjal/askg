@@ -64,7 +64,7 @@ func getCookiesFromBrowser(profile string) map[string]string {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate("https://gemini.google.com/app"),
-		chromedp.WaitVisible("#ng-non-bindable", chromedp.ByID),
+		chromedp.WaitVisible("div[ng-non-bindable]", chromedp.ByID),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			cookies, err := network.GetCookies().Do(ctx)
 			if err != nil {
