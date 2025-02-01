@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
+	askg "github.com/mosajjal/askg/pkg"
 	"github.com/rs/zerolog"
 )
 
@@ -62,7 +63,7 @@ func (b *GeminiAPI) Ask(prompt string) (string, error) {
 	// Create a Resty Client
 	client := resty.New()
 
-	client.SetLogger(Log{b.logger})
+	client.SetLogger(askg.Log{b.logger})
 	client.SetDebug(true)
 
 	// set content type to application/json

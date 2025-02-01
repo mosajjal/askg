@@ -1,4 +1,4 @@
-package gemini
+package askg
 
 import "github.com/rs/zerolog"
 

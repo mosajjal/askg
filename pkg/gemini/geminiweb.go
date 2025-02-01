@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
+	askg "github.com/mosajjal/askg/pkg"
 	"github.com/rs/zerolog"
 	"github.com/tidwall/gjson"
 	"k8s.io/apimachinery/pkg/util/rand"
@@ -70,7 +71,7 @@ func (b *Gemini) Ask(prompt string) (string, error) {
 	// Create a Resty Client
 	client := resty.New()
 
-	client.SetLogger(Log{b.logger})
+	client.SetLogger(askg.Log{b.logger})
 	client.SetDebug(true)
 
 	client.SetHeaders(headers)

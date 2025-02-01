@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mosajjal/askg/gemini"
+	"github.com/mosajjal/askg/pkg/gemini"
 	"github.com/rs/zerolog"
 	"github.com/valyala/gorpc"
 
